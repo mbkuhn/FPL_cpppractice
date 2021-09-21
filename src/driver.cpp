@@ -31,16 +31,14 @@ int main(int argc, char* argv[])
 
   // Sample commands
   team sample = team();
-  std::cout << "after team \n";
   sample.sample_team();
-  std::cout << "after sample \n";
+  sample.synopsis();
   int score = sample.get_points();
-  std::cout << "after points \n";
   // Print captain
   std::string captain = (*sample.capt).get_attr_str("name");
 
-  std::cout << "Sample point total: " << score << ", Team captain is " << captain << ".\n";
-  
+  std::cout << "\nSample point total: " << score << ", Team captain is " << captain << ".\n";
+
   return 0;
-  
+
 }

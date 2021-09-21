@@ -3,6 +3,7 @@
 //#define PLAYER_H
 #include <string>
 #include <iostream>
+#include <cstring>
 
 // Define player class
 class player
@@ -20,11 +21,12 @@ public:
   // Constructor
   player()
   {
-    name = " ";
-    team = " ";
-    position = " ";
+    name = "empty";
+    team = "empty";
+    position = "empty";
     total_points = 0;
     value = 0;
+    played = false;
   }
   // Data getters
   int get_attr_int(const std::string attr)
@@ -56,7 +58,7 @@ public:
   // Data setters
   void update_attr(const std::string attr, const int val)
   {
-    if (attr=="total points")
+    if (attr=="points")
       total_points=val;
     if (attr=="value")
       value=val;
@@ -65,17 +67,47 @@ public:
   }
   void update_attr(const std::string attr, const std::string val)
   {
-    if (attr=="name")
-      name=val;
-    if (attr=="team")
-	team=val;
-    if (attr=="position")
-      position=val;
+    if (attr=="name") {
+      //name.replace(0,val.size(),val);
+      team.resize(val.size());
+      name=val; }
+    if (attr=="team") {
+      team.resize(val.size());
+	    team=val; }
+    if (attr=="position") {
+      position.resize(val.size());
+      position=val; }
+  }
+  // Avoid the use of this char overload. useful for sample team, though
+  void update_attr(const std::string attr, const char* cval)
+  {
+    int n = std::strlen(cval);
+    std::string val(cval,n);
+    if (attr=="name") {
+      team.resize(val.size());
+      name=val; }
+    if (attr=="team") {
+      team.resize(val.size());
+      team=val; }
+    if (attr=="position") {
+      position.resize(val.size());
+      position=val; }
   }
   void update_attr(const std::string attr, const bool val)
   {
     if (attr=="played")
       played=val;
+  }
+  // Output to screen
+  void synopsis()
+  {
+    std::cout<<position<<": "<<name;
+    std::cout<<",  "<<float (value/10.0)<< " million\n";
+    if (played) {
+      std::cout<<total_points<<" pts  --";}
+    else {
+      std::cout<<"("<<total_points<<") pts  --";}
+    std::cout<<"  "<<team<<"\n";
   }
 };
 
@@ -91,19 +123,39 @@ public:
   player* MIDs;
   player* FWDs;
   // ptr to captain, always meant to be shared
-  player* capt; 
+  player* capt;
+  // ptr to all players on team, meant to be shared
+  player** roster;
 
   // Constructor for initial gameweek
   team()
   {
     // Amount of spending money available
-    int bank = 1'000; // 100 mil - units of .1 mil
+    bank = 1'000; // 100 mil - units of .1 mil
     // Players on team (number according to rules)
-    player* GKs = new player[2];
-    player* DEFs = new player[5];
-    player* MIDs = new player[5];
-    player* FWDs = new player[3];
-    player* capt = nullptr;
+    GKs = new player[2];
+    DEFs = new player[5];
+    MIDs = new player[5];
+    FWDs = new player[3];
+    // Construct ptr for whole roster
+    roster = new player*[15];
+    int n = -1;
+    for (int i= 0; i < 2; ++i) {
+      ++n;
+      roster[n] = &GKs[i]; }
+    for (int i= 0; i < 5; ++i) {
+      ++n;
+      roster[n] = &DEFs[i]; }
+    for (int i= 0; i < 5; ++i) {
+      ++n;
+      roster[n] = &MIDs[i]; }
+    for (int i= 0; i < 3; ++i) {
+      ++n;
+      roster[n] = &FWDs[i]; }
+    // Only one captain, not chosen yet
+    capt = new player;
+    capt = nullptr;
+
   }
   // Copy constructor for new gameweek
   team(const team& told)
@@ -111,11 +163,10 @@ public:
     // Same amount of spending money
     bank = told.bank;
     // Initialize pointers
-    player* GKs = new player[2];
-    player* DEFs = new player[5];
-    player* MIDs = new player[5];
-    player* FWDs = new player[3];
-    player* capt = nullptr;
+    GKs = new player[2];
+    DEFs = new player[5];
+    MIDs = new player[5];
+    FWDs = new player[3];
     // Copy pointers
     for (int i= 0; i < 2; ++i)
       GKs[i] = told.GKs[i];
@@ -125,8 +176,24 @@ public:
       MIDs[i] = told.MIDs[i];
     for (int i= 0; i < 3; ++i)
       FWDs[i] = told.FWDs[i];
-    
+    // Copy roster pointer
+
+    // Only one captain, not chosen yet
+    capt = new player;
+    capt = nullptr;
   }
+  // Output synopsis of team
+  void synopsis()
+  {
+    // Cycle through all players on roster
+    for (int i=0; i<15; ++i) {
+      if (i==2||i==7||i==11)
+        std::cout<<"\n";
+      // Get player synopsis
+      (*roster[i]).synopsis();
+    }
+  }
+
   // Make a sample team for testing
   void sample_team()
   {
@@ -134,17 +201,12 @@ public:
     // name, position, value, points, team
     int i = 0;
     GKs[i].update_attr("name","Tim Howard");
-    std::cout << "after name\n";
     GKs[i].update_attr("position","GK");
-    std::cout << "after position\n";
     GKs[i].update_attr("value",50);
-    std::cout << "after value\n";
     GKs[i].update_attr("points",8);
-    std::cout << "after points\n";
     GKs[i].update_attr("team","Everton");
-    std::cout << "after player\n";
+    GKs[i].update_attr("played",true);
     bank = bank - 50;
-    std::cout << "after bank\n";
     ++i;
     GKs[i].update_attr("name","Zack Steffen");
     GKs[i].update_attr("position","GK");
@@ -159,6 +221,7 @@ public:
     DEFs[i].update_attr("value",45);
     DEFs[i].update_attr("points",5);
     DEFs[i].update_attr("team","Fulham");
+    DEFs[i].update_attr("played",true);
     bank = bank - 45;
     ++i;
     DEFs[i].update_attr("name","John Brooks");
@@ -166,6 +229,7 @@ public:
     DEFs[i].update_attr("value",65);
     DEFs[i].update_attr("points",10);
     DEFs[i].update_attr("team","Wolfsburg");
+    DEFs[i].update_attr("played",true);
     bank = bank - 65;
     ++i;
     DEFs[i].update_attr("name","Sergino Dest");
@@ -180,6 +244,7 @@ public:
     DEFs[i].update_attr("value",45);
     DEFs[i].update_attr("points",2);
     DEFs[i].update_attr("team","Newcastle FC");
+    DEFs[i].update_attr("played",true);
     bank = bank - 45;
     ++i;
     DEFs[i].update_attr("name","Tim Ream");
@@ -195,6 +260,7 @@ public:
     MIDs[i].update_attr("value",60);
     MIDs[i].update_attr("points",3);
     MIDs[i].update_attr("team","AS Roma");
+    MIDs[i].update_attr("played",true);
     bank = bank - 60;
     ++i;
     MIDs[i].update_attr("name","Weston McKennie");
@@ -202,6 +268,7 @@ public:
     MIDs[i].update_attr("value",60);
     MIDs[i].update_attr("points",11);
     MIDs[i].update_attr("team","Juventus");
+    MIDs[i].update_attr("played",true);
     bank = bank - 60;
     ++i;
     MIDs[i].update_attr("name","Christian Pulisic");
@@ -209,6 +276,7 @@ public:
     MIDs[i].update_attr("value",90);
     MIDs[i].update_attr("points",1);
     MIDs[i].update_attr("team","Chelsea");
+    MIDs[i].update_attr("played",true);
     bank = bank - 90;
     ++i;
     MIDs[i].update_attr("name","Kellyn Acosta");
@@ -223,6 +291,7 @@ public:
     MIDs[i].update_attr("value",85);
     MIDs[i].update_attr("points",3);
     MIDs[i].update_attr("team","BVB Dortnmund");
+    MIDs[i].update_attr("played",true);
     bank = bank - 85;
     //
     i = 0;
@@ -231,6 +300,7 @@ public:
     FWDs[i].update_attr("value",60);
     FWDs[i].update_attr("points",7);
     FWDs[i].update_attr("team","Norwich FC");
+    FWDs[i].update_attr("played",true);
     bank = bank - 60;
     ++i;
     FWDs[i].update_attr("name","Clint Dempsey");
@@ -238,6 +308,7 @@ public:
     FWDs[i].update_attr("value",100);
     FWDs[i].update_attr("points",12);
     FWDs[i].update_attr("team","Fulham");
+    FWDs[i].update_attr("played",true);
     bank = bank - 100;
     ++i;
     FWDs[i].update_attr("name","Darryl Dike");
@@ -245,8 +316,8 @@ public:
     FWDs[i].update_attr("value",75);
     FWDs[i].update_attr("points",7);
     FWDs[i].update_attr("team","Barnsley");
+    FWDs[i].update_attr("played",true);
     bank = bank - 75;
-    ++i;
   }
   // Get team point total, given current selection
   // Assume captain is the one with the most points
@@ -255,40 +326,18 @@ public:
     int tmp;
     int pts = 0;
     int maxp = 0;
-    for (int i= 0; i < 2; ++i) {
-      if (GKs[i].get_attr_bool("played")) {
-	tmp = GKs[i].get_attr_int("points");
-	pts += tmp;
-	maxp = std::max(tmp,maxp);
-	if (tmp == maxp)
-	  *capt = GKs[i];
-      }
-    }
-    for (int i= 0; i < 5; ++i) {
-      if (DEFs[i].get_attr_bool("played")) {
-	tmp = DEFs[i].get_attr_int("points");
-	pts += tmp;
-	maxp = std::max(tmp,maxp);
-	if (tmp == maxp)
-	  *capt = DEFs[i];
-      }
-    }
-    for (int i= 0; i < 5; ++i) {
-      if (MIDs[i].get_attr_bool("played")) {
-	tmp = MIDs[i].get_attr_int("points");
-	pts += tmp;
-	maxp = std::max(tmp,maxp);
-	if (tmp == maxp)
-	  *capt = MIDs[i];
-      }
-    }
-    for (int i= 0; i < 3; ++i) {
-      if (FWDs[i].get_attr_bool("played")) {
-	tmp = FWDs[i].get_attr_int("points");
-	pts += tmp;
-	maxp = std::max(tmp,maxp);
-	if (tmp == maxp)
-	  *capt = FWDs[i];
+    // Cycle through all players on roster
+    for (int i=0; i<15; ++i) {
+      // Check if player played
+      if ((*roster[i]).get_attr_bool("played")) {
+        // Contribute points
+        tmp = (*roster[i]).get_attr_int("points");
+        pts += tmp;
+        // Look for captain
+        maxp = std::max(tmp,maxp);
+        if (tmp == maxp)
+          // Assign captain if max points is true
+          capt = roster[i];
       }
     }
     // Add additional points from captain
@@ -297,7 +346,7 @@ public:
   }
 
   // Get team point total, best possible, and change who plays
-  
+
 };
 
 //#endif
