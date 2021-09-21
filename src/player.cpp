@@ -187,7 +187,7 @@ public:
   {
     // Cycle through all players on roster
     for (int i=0; i<15; ++i) {
-      if (i==2||i==7||i==11)
+      if (i==2||i==7||i==12)
         std::cout<<"\n";
       // Get player synopsis
       (*roster[i]).synopsis();
