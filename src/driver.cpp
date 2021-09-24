@@ -20,12 +20,17 @@ public:
     // initialize stream and enable exceptions
     std::stringstream ss(argv[i]);
     ss.exceptions(std::ios_base::badbit | std::ios_base::failbit);
-    switch (i) {
-      case 1: {ss >> init_gw; break;}
-      case 2: {ss >> tr_gw; break;}
+    try{
+      switch (i) {
+        case 1: {ss >> init_gw; break;}
+        case 2: {ss >> tr_gw; break;}
       }
+    } catch (...) {
+      std::cout << "Faulty inputs, quitting program. Supply 1 or 2 integer arguments.\n";
+      exit (EXIT_FAILURE);
     }
-    std::cout << "Parameters: initial gameweek " << init_gw << ", " << tr_gw << " transfer(s) each gameweek.\n" ;
+  }
+  std::cout << "Parameters: initial gameweek " << init_gw << ", " << tr_gw << " transfer(s) each gameweek.\n" ;
   }
   // Getters
   int get_initGW() {
@@ -42,7 +47,7 @@ int main(int argc, char* argv[])
   // Check if number of inputs is within allowed amount
   if (argc>3) {
     std::cout << "Faulty inputs, quitting program. Supply 1 or 2 integer arguments.\n";
-    return 1;
+    exit (EXIT_FAILURE);
   }
   // Construct class
   user_input ui = user_input();
