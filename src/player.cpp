@@ -11,10 +11,17 @@ class player
 private:
 
   // Player attributes
-  std::string name,team,position,kickoff_time;
-  double xP,creativity,ict_index,influence,threat;
-  int assists,bonus,bps,clean_sheets,element,fixture,goals_conceded,goals_scored,minutes,opponent_team,own_goals,penalties_missed,penalties_saved,red_cards,round,saves,selected,team_a_score,team_h_score,total_points,transfers_balance,transfers_in,transfers_out,value,yellow_cards;
+  std::string name,team,position;
+  int total_points,value;
   bool was_home,played;
+  // Currently unused attributes
+  //std::string kickoff_time;
+  //double xP,creativity,ict_index,influence,threat;
+  //int assists,bonus,bps,clean_sheets,element,fixture,goals_conceded,
+  // goals_scored,minutes,opponent_team,own_goals,penalties_missed,
+  // penalties_saved,red_cards,round,saves,selected,team_a_score,team_h_score,
+  // transfers_balance,transfers_in,transfers_out,yellow_cards;
+  //bool was_home;
 
 public:
 
@@ -35,8 +42,6 @@ public:
       return total_points;
     if (attr=="value")
       return value;
-    if (attr=="element")
-      return element;
     return -1;
   }
   std::string get_attr_str(const std::string attr)
@@ -62,8 +67,6 @@ public:
       total_points=val;
     if (attr=="value")
       value=val;
-    if (attr=="element")
-      element=val;
   }
   void update_attr(const std::string attr, const std::string val)
   {
