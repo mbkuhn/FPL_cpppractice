@@ -134,11 +134,34 @@ public:
 // Write google tests in namespace
 namespace{
   // Test values after player is constructed but not populated
+  // Test update_attr
   TEST(SampleTeamTest, empty_player)
   {
     // Construct player
     player empty;
     // Get and compare initial values
     EXPECT_EQ(empty.get_attr_str("name"),"empty");
+    empty.update_attr("name","test");
+    EXPECT_EQ(empty.get_attr_str("name"),"test");
+
+    EXPECT_EQ(empty.get_attr_str("team"),"empty");
+    empty.update_attr("team","test");
+    EXPECT_EQ(empty.get_attr_str("team"),"test");
+
+    EXPECT_EQ(empty.get_attr_str("position"),"empty");
+    empty.update_attr("position","test");
+    EXPECT_EQ(empty.get_attr_str("position"),"test");
+
+    EXPECT_EQ(empty.get_attr_int("points"),0);
+    empty.update_attr("points",100);
+    EXPECT_EQ(empty.get_attr_int("points"),100);
+
+    EXPECT_EQ(empty.get_attr_int("value"),0);
+    empty.update_attr("value",100);
+    EXPECT_EQ(empty.get_attr_int("value"),100);
+
+    EXPECT_EQ(empty.get_attr_bool("played"),false);
+    empty.update_attr("played",true);
+    EXPECT_EQ(empty.get_attr_bool("played"),true);
   }
 }

@@ -72,7 +72,7 @@ public:
   {
     if (attr=="name") {
       //name.replace(0,val.size(),val);
-      team.resize(val.size());
+      name.resize(val.size());
       name=val; }
     if (attr=="team") {
       team.resize(val.size());
@@ -87,7 +87,7 @@ public:
     int n = std::strlen(cval);
     std::string val(cval,n);
     if (attr=="name") {
-      team.resize(val.size());
+      name.resize(val.size());
       name=val; }
     if (attr=="team") {
       team.resize(val.size());
