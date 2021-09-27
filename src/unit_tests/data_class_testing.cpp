@@ -47,6 +47,7 @@ public:
     DEFs[i].update_attr("value",70);
     DEFs[i].update_attr("points",9);
     DEFs[i].update_attr("team","Barcelona");
+    DEFs[i].update_attr("played",true);
     bank = bank - 70;
     ++i;
     DEFs[i].update_attr("name","DeAndre Yedlin");
@@ -118,7 +119,6 @@ public:
     FWDs[i].update_attr("value",100);
     FWDs[i].update_attr("points",12);
     FWDs[i].update_attr("team","Fulham");
-    FWDs[i].update_attr("played",true);
     bank = bank - 100;
     ++i;
     FWDs[i].update_attr("name","Darryl Dike");
@@ -163,5 +163,64 @@ namespace{
     EXPECT_EQ(empty.get_attr_bool("played"),false);
     empty.update_attr("played",true);
     EXPECT_EQ(empty.get_attr_bool("played"),true);
+  }
+  // Test values after sample team
+  // Test both functions for getting points and choosing captain
+  TEST(SampleTeamTest, sample_team)
+  {
+    // Construct team
+    sample steam = sample();
+    // Populate team with sample values
+    steam.sample_team();
+    // Check variety of properties from sample values
+    EXPECT_EQ(steam.GKs[0].get_attr_str("team"),"Everton");
+    EXPECT_EQ(steam.GKs[1].get_attr_str("name"),"Zack Steffen");
+    EXPECT_EQ(steam.DEFs[0].get_attr_int("points"),5);
+    EXPECT_EQ(steam.DEFs[1].get_attr_int("value"),65);
+    EXPECT_EQ(steam.DEFs[2].get_attr_str("team"),"Barcelona");
+    EXPECT_EQ(steam.DEFs[3].get_attr_bool("played"),true);
+    EXPECT_EQ(steam.DEFs[4].get_attr_str("position"),"DEF");
+    EXPECT_EQ(steam.MIDs[0].get_attr_int("points"),3);
+    EXPECT_EQ(steam.MIDs[1].get_attr_int("value"),60);
+    EXPECT_EQ(steam.MIDs[2].get_attr_str("team"),"Chelsea");
+    EXPECT_EQ(steam.MIDs[3].get_attr_str("position"),"MID");
+    EXPECT_EQ(steam.MIDs[4].get_attr_bool("played"),true);
+    EXPECT_EQ(steam.FWDs[0].get_attr_int("points"),7);
+    EXPECT_EQ(steam.FWDs[1].get_attr_int("value"),100);
+    EXPECT_EQ(steam.FWDs[2].get_attr_str("team"),"Barnsley");
+
+    // Check the use of the roster pointer
+    EXPECT_EQ((*steam.roster[ 0]).get_attr_str("position"),"GK");
+    EXPECT_EQ((*steam.roster[ 1]).get_attr_str("position"),"GK");
+    EXPECT_EQ((*steam.roster[ 2]).get_attr_str("position"),"DEF");
+    EXPECT_EQ((*steam.roster[ 3]).get_attr_str("position"),"DEF");
+    EXPECT_EQ((*steam.roster[ 4]).get_attr_str("position"),"DEF");
+    EXPECT_EQ((*steam.roster[ 5]).get_attr_str("position"),"DEF");
+    EXPECT_EQ((*steam.roster[ 6]).get_attr_str("position"),"DEF");
+    EXPECT_EQ((*steam.roster[ 7]).get_attr_str("position"),"MID");
+    EXPECT_EQ((*steam.roster[ 8]).get_attr_str("position"),"MID");
+    EXPECT_EQ((*steam.roster[ 9]).get_attr_str("position"),"MID");
+    EXPECT_EQ((*steam.roster[10]).get_attr_str("position"),"MID");
+    EXPECT_EQ((*steam.roster[11]).get_attr_str("position"),"MID");
+    EXPECT_EQ((*steam.roster[12]).get_attr_str("position"),"FWD");
+    EXPECT_EQ((*steam.roster[13]).get_attr_str("position"),"FWD");
+    EXPECT_EQ((*steam.roster[14]).get_attr_str("position"),"FWD");
+
+    // Get points, which chooses captain
+    int score = steam.get_points();
+    // Get name of captain
+    std::string captain = (*steam.capt).get_attr_str("name");
+    // Check both with known values
+    EXPECT_EQ(score,77);
+    EXPECT_EQ(captain,"Weston McKennie");
+
+    // Get best points, which chooses who plays and captain
+
+    // Get name of captain
+
+    // Check both with known values
+    //EXPECT_EQ(score,102)
+    //EXPECT_EQ(captain,"Clint Dempsey")
+
   }
 }

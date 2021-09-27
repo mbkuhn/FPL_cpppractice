@@ -53,17 +53,6 @@ int main(int argc, char* argv[])
   user_input ui = user_input();
   // Interpret inputs to main
   ui.interpret(argc,argv);
-/*
-  // Sample commands
-  team sample = team();
-  sample.sample_team();
-  sample.synopsis();
-  int score = sample.get_points();
-  // Print captain
-  std::string captain = (*sample.capt).get_attr_str("name");
 
-  std::cout << "\nSample point total: " << score << ", Team captain is " << captain << ".\n";
-*/
   return 0;
-
 }
