@@ -1,14 +1,14 @@
 #include "driver.h"
 
-// Member functions for class - user_input
-  user_input::user_input() {
-    // Arguments:
-    // - initial condition: week to choose the best 11 (between 1 and 38)
-    // - number of transfers permitted each week
-    init_gw = 1;
-    tr_gw = 1;
-  }
-  void user_input::interpret(int argc,char* argv[]) {
+// == Member functions for class - user_input == //
+user_input::user_input() {
+  // Arguments:
+  // - initial condition: week to choose the best 11 (between 1 and 38)
+  // - number of transfers permitted each week
+  init_gw = 1;
+  tr_gw = 1;
+}
+void user_input::interpret(int argc,char* argv[]) {
   // Initialize if specified
   for (int i=1; i<argc; ++i) {
     // initialize stream and enable exceptions
@@ -25,21 +25,21 @@
     }
   }
   std::cout << "Parameters: initial gameweek " << init_gw << ", " << tr_gw << " transfer(s) each gameweek.\n" ;
-  }
-  // Getters
-  int user_input::get_initGW() {
-    return init_gw;
-  }
-  int user_input::get_trPerGW() {
-    return tr_gw;
-  }
-  // Get filename
-  std::string user_input::get_filename(int gw, std::string season) {
-      std::stringstream sbuf;
-      // src_dir is defined using cmake macro
-      sbuf << src_dir << "/../data/" << season << "/gws/gw" << gw << ".csv";
-      return sbuf.str();
-  }
+}
+// Getters
+int user_input::get_initGW() {
+  return init_gw;
+}
+int user_input::get_trPerGW() {
+  return tr_gw;
+}
+// Get filename
+std::string user_input::get_filename(int gw, std::string season) {
+  std::stringstream sbuf;
+  // src_dir is defined using cmake macro
+  sbuf << src_dir << "/../data/" << season << "/gws/gw" << gw << ".csv";
+  return sbuf.str();
+}
 
 // Find the best team possible given the parameters
 int main(int argc, char* argv[])
