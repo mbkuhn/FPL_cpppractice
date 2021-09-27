@@ -13,7 +13,7 @@ private:
   // Player attributes
   std::string name,team,position;
   int total_points,value;
-  bool was_home,played;
+  bool played;
   // Currently unused attributes
   //std::string kickoff_time;
   //double xP,creativity,ict_index,influence,threat;

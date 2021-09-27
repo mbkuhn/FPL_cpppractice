@@ -261,4 +261,18 @@ namespace{
     EXPECT_EQ(fwds_in,1);
     EXPECT_EQ(plys_in,11);
   }
+
+  // Test values after sample team
+  // Test both functions for getting points and choosing captain
+  TEST(SampleTeamTest, read_player) {
+    // Construct player
+    player empty;
+    // Read player attributes from file
+
+    // Check new player attributes against default
+    EXPECT_NE(empty.get_attr_str("name"),"empty");
+    EXPECT_NE(empty.get_attr_str("team"),"empty");
+    EXPECT_NE(empty.get_attr_str("position"),"empty");
+    EXPECT_NE(empty.get_attr_int("value"),0);
+  }
 }

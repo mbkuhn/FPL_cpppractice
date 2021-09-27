@@ -39,6 +39,13 @@ public:
   int get_trPerGW() {
     return tr_gw;
   }
+  // Get filename
+  std::string get_filename(int gw, std::string season) {
+      std::stringstream sbuf;
+      // src_dir is defined using cmake macro
+      sbuf << src_dir << "/../data/" << season << "/gws/gw" << gw << ".csv";
+      return sbuf.str();
+  }
 };
 
 // Find the best team possible given the parameters
