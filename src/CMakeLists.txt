@@ -5,11 +5,15 @@ project(FPL_cpppractice)
 # Target names
 set(exe_name "best_season")
 set(exe_utest_name "${exe_name}_unit_tests")
+set(exe_lib "best_season_obj")
 
 # Main executable (for now)
 add_executable(${exe_name} driver.cpp player.cpp)
 # Communicate source directory to code
 target_compile_definitions(${exe_name} PRIVATE src_dir="${CMAKE_SOURCE_DIR}")
+# Make object files accessible (for sake of gtest code)
+add_library(${exe_lib} OBJECT driver.cpp player.cpp decisionmaker.cpp)
+target_compile_definitions(${exe_lib} PRIVATE src_dir="${CMAKE_SOURCE_DIR}")
 
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 option(ENABLE_TESTS "Enable regression testing" OFF)

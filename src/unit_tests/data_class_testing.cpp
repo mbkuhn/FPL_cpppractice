@@ -1,4 +1,4 @@
-#include "../player.cpp"
+#include "../player.h"
 #include "gtest/gtest.h"
 // Set up class just for populating a fake team
 class sample : public team
