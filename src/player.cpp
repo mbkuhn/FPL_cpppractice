@@ -1,32 +1,9 @@
-//#include "player.h"
-//#ifndef PLAYER_H
-//#define PLAYER_H
-#include <string>
-#include <iostream>
-#include <cstring>
+#include "player.h"
 
-// Define player class
-class player
-{
-private:
-
-  // Player attributes
-  std::string name,team,position;
-  int total_points,value;
-  bool played;
-  // Currently unused attributes
-  //std::string kickoff_time;
-  //double xP,creativity,ict_index,influence,threat;
-  //int assists,bonus,bps,clean_sheets,element,fixture,goals_conceded,
-  // goals_scored,minutes,opponent_team,own_goals,penalties_missed,
-  // penalties_saved,red_cards,round,saves,selected,team_a_score,team_h_score,
-  // transfers_balance,transfers_in,transfers_out,yellow_cards;
-  //bool was_home;
-
-public:
+// Member functions for class - player
 
   // Constructor
-  player()
+  player::player()
   {
     name = "empty";
     team = "empty";
@@ -36,7 +13,7 @@ public:
     played = false;
   }
   // Data getters
-  int get_attr_int(const std::string attr)
+  int player::get_attr_int(const std::string attr)
   {
     if (attr=="points")
       return total_points;
@@ -44,7 +21,7 @@ public:
       return value;
     return -1;
   }
-  std::string get_attr_str(const std::string attr)
+  std::string player::get_attr_str(const std::string attr)
   {
     if (attr=="name")
       return name;
@@ -54,21 +31,21 @@ public:
       return position;
     return "error";
   }
-  bool get_attr_bool(const std::string attr)
+  bool player::get_attr_bool(const std::string attr)
   {
     if (attr=="played")
       return played;
     return false;
   }
   // Data setters
-  void update_attr(const std::string attr, const int val)
+  void player::update_attr(const std::string attr, const int val)
   {
     if (attr=="points")
       total_points=val;
     if (attr=="value")
       value=val;
   }
-  void update_attr(const std::string attr, const std::string val)
+  void player::update_attr(const std::string attr, const std::string val)
   {
     if (attr=="name") {
       //name.replace(0,val.size(),val);
@@ -82,7 +59,7 @@ public:
       position=val; }
   }
   // Avoid the use of this char overload. useful for sample team, though
-  void update_attr(const std::string attr, const char* cval)
+  void player::update_attr(const std::string attr, const char* cval)
   {
     int n = std::strlen(cval);
     std::string val(cval,n);
@@ -96,13 +73,13 @@ public:
       position.resize(val.size());
       position=val; }
   }
-  void update_attr(const std::string attr, const bool val)
+  void player::update_attr(const std::string attr, const bool val)
   {
     if (attr=="played")
       played=val;
   }
   // Output to screen
-  void synopsis()
+  void player::synopsis()
   {
     std::cout<<position<<": "<<name;
     std::cout<<",  "<<float (value/10.0)<< " million\n";
@@ -112,26 +89,11 @@ public:
       std::cout<<"("<<total_points<<") pts  --";}
     std::cout<<"  "<<team<<"\n";
   }
-};
 
-
-// Define team class
-class team
-{
-public:
-  // Contents are public
-  int bank;
-  player* GKs;
-  player* DEFs;
-  player* MIDs;
-  player* FWDs;
-  // ptr to captain, always meant to be shared
-  player* capt;
-  // ptr to all players on team, meant to be shared
-  player** roster;
+// Member functions for class - player
 
   // Constructor for initial gameweek
-  team()
+  team::team()
   {
     // Amount of spending money available
     bank = 1'000; // 100 mil - units of .1 mil
@@ -161,7 +123,7 @@ public:
 
   }
   // Copy constructor for new gameweek
-  team(const team& told)
+  team::team(const team& told)
   {
     // Same amount of spending money
     bank = told.bank;
@@ -186,7 +148,7 @@ public:
     capt = nullptr;
   }
   // Output synopsis of team
-  void synopsis()
+  void team::synopsis()
   {
     // Cycle through all players on roster
     for (int i=0; i<15; ++i) {
@@ -199,7 +161,7 @@ public:
 
   // Get team point total, given current selection
   // Assume captain is the one with the most points
-  int get_points()
+  int team::get_points()
   {
     int tmp;
     int pts = 0;
@@ -224,7 +186,7 @@ public:
   }
 
   // Get team point total, best possible, and change who plays
-  int get_points_best()
+  int team::get_points_best()
   {
     int tmp;
     int rank_pts[12] = {0};
@@ -302,7 +264,3 @@ public:
     tmp = get_points();
     return tmp;
   }
-
-};
-
-//#endif
