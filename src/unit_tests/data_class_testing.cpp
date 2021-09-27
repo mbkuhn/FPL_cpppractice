@@ -215,12 +215,50 @@ namespace{
     EXPECT_EQ(captain,"Weston McKennie");
 
     // Get best points, which chooses who plays and captain
-
+    score = steam.get_points_best();
     // Get name of captain
-
+    std::string captain2 = (*steam.capt).get_attr_str("name");
     // Check both with known values
-    //EXPECT_EQ(score,102)
-    //EXPECT_EQ(captain,"Clint Dempsey")
+    EXPECT_EQ(score,90);
+    EXPECT_EQ(captain2,"Clint Dempsey");
 
+    // Change points so that single forward rule is used
+    (*steam.roster[9]).update_attr("points",5);
+    (*steam.roster[2]).update_attr("points",2);
+    (*steam.roster[3]).update_attr("points",2);
+    (*steam.roster[4]).update_attr("points",2);
+    score = steam.get_points_best();
+
+    // Check number of defenders in played team, also total players
+    int defs_in = 0; int plys_in = 0;
+    for (int i=0; i<15; ++i) {
+      if ((*steam.roster[i]).get_attr_bool("played")) {
+        ++plys_in;
+        if ((*steam.roster[i]).get_attr_str("position")=="DEF") {
+          ++defs_in;
+        }
+      }
+    }
+    EXPECT_EQ(defs_in,3);
+    EXPECT_EQ(plys_in,11);
+
+    // Change points so that single forward rule is used
+    (*steam.roster[12]).update_attr("points",1);
+    (*steam.roster[13]).update_attr("points",1);
+    (*steam.roster[14]).update_attr("points",1);
+    score = steam.get_points_best();
+
+    // Check number of forwards in played team, also total players
+    int fwds_in = 0; plys_in = 0;
+    for (int i=0; i<15; ++i) {
+      if ((*steam.roster[i]).get_attr_bool("played")) {
+        ++plys_in;
+        if ((*steam.roster[i]).get_attr_str("position")=="FWD") {
+          ++fwds_in;
+        }
+      }
+    }
+    EXPECT_EQ(fwds_in,1);
+    EXPECT_EQ(plys_in,11);
   }
 }

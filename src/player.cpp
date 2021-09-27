@@ -224,6 +224,84 @@ public:
   }
 
   // Get team point total, best possible, and change who plays
+  int get_points_best()
+  {
+    int tmp;
+    int rank_pts[12] = {0};
+    int rank_ind[12] = {0};
+    int defs_in = 0;
+    int mids_in = 0;
+    int fwds_in = 0;
+
+    // Cycle through goalies, pick best
+    tmp = GKs[0].get_attr_int("points");
+    if (tmp > GKs[1].get_attr_int("points")) {
+      GKs[0].update_attr("played",true);
+      GKs[1].update_attr("played",false);
+    } else {
+      GKs[1].update_attr("played",true);
+      GKs[0].update_attr("played",false);
+    }
+    // Cycle through all field players on roster
+    // to rank points scored by team
+    for (int i=2; i<15; ++i) {
+      // Get points of current field player
+      tmp = (*roster[i]).get_attr_int("points");
+      // Traverse ranked list of players' points
+      for (int ii=0; ii<i-1; ++ii) {
+        if (rank_pts[ii]<tmp){
+          // Move other elements to the right
+          for (int iii=i-2; iii>ii; --iii) {
+            rank_pts[iii] = rank_pts[iii-1];
+            rank_ind[iii] = rank_ind[iii-1];
+          }
+          // Populate array with current value
+          rank_pts[ii] = tmp;
+          rank_ind[ii] = i;
+          // Exit ii loop
+          break;
+        }
+      }
+    }
+    // Cycle through all field players on roster
+    // to select which players should play
+    for (int i=2; i<15; ++i) {
+      // Look in ranked list of indices
+      tmp = rank_ind[i-2];
+      // Check constraints on lineup
+      if (defs_in+mids_in+fwds_in == 10) {
+        // No players can be admitted, team is full
+        (*roster[tmp]).update_attr("played",false);
+      } else { if (mids_in+fwds_in == 7) {
+        // Only defenders can be admitted, to enforce >= 3 defender limit
+        if ((*roster[tmp]).get_attr_str("position")=="DEF") {
+          (*roster[tmp]).update_attr("played",true);
+        } else {
+          (*roster[tmp]).update_attr("played",false);
+        }
+      } else { if (defs_in + mids_in == 9) {
+        // Only forwards can be admitted, to enforce >= 1 forward limit
+        if ((*roster[tmp]).get_attr_str("position")=="FWD") {
+          (*roster[tmp]).update_attr("played",true);
+        } else {
+          (*roster[tmp]).update_attr("played",false);
+        }
+      } else {
+        // None of the constraints apply, simply add player
+        (*roster[tmp]).update_attr("played",true);
+      } } }
+      // If current player is included, add to position tally
+      if ((*roster[tmp]).get_attr_bool("played")) {
+        std::string pos = (*roster[tmp]).get_attr_str("position");
+        if (pos=="DEF") ++defs_in;
+        if (pos=="MID") ++mids_in;
+        if (pos=="FWD") ++fwds_in;
+      }
+    }
+    // Call basic get points now that players have been chosen
+    tmp = get_points();
+    return tmp;
+  }
 
 };
 
