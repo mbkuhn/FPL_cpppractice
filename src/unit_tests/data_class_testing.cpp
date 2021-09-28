@@ -1,4 +1,5 @@
 #include "../player.h"
+#include "../uf_io.h"
 #include "gtest/gtest.h"
 // Set up class just for populating a fake team
 class sample : public team
@@ -274,5 +275,25 @@ namespace{
     EXPECT_NE(empty.get_attr_str("team"),"empty");
     EXPECT_NE(empty.get_attr_str("position"),"empty");
     EXPECT_NE(empty.get_attr_int("value"),0);
+  }
+
+  // Test ability of key maker to correctly interpret input stream
+  TEST(FileReadTest, read_key) {
+    // Populate input stream
+    std::istringstream is("name,blank,position,value,not,0,total_points,2000,team");
+    int is_length = 9;
+    // Construct user_input class
+    user_input ui = user_input();
+    // Call function to generate key_csv
+    ui.read_player_attr_header(is);
+    // Output key for the sake of testing
+    int *key_csv = ui.output_player_attr_header();
+    // A priori reference based on this test
+    int key_ref[is_length] = {1,0,2,5,0,0,4,0,3};
+    // Cycle through integer lists for direct testing
+    for (int i=0; i<is_length; ++i) {
+      EXPECT_EQ(key_csv[i],key_ref[i]);
+    }
+
   }
 }

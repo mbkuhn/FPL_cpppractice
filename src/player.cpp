@@ -2,7 +2,7 @@
 
 // == Member functions for class - player == //
 
-// Constructor
+// Constructors
 player::player()
 {
   name = "empty";
@@ -10,6 +10,20 @@ player::player()
   position = "empty";
   total_points = 0;
   value = 0;
+  played = false;
+}
+player::player(const std::string name_in,
+               const std::string team_in,
+               const std::string pos_in,
+               const int tot_pts_in,
+               const int value_in)
+{
+  name = name_in;
+  team = team_in;
+  position = pos_in;
+  total_points = tot_pts_in;
+  value = value_in;
+  // Don't know if player is playing, initialize as benched
   played = false;
 }
 // Data getters
