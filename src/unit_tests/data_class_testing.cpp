@@ -1,5 +1,4 @@
 #include "../player.h"
-#include "../uf_io.h"
 #include "gtest/gtest.h"
 // Set up class just for populating a fake team
 class sample : public team
@@ -131,12 +130,26 @@ public:
     bank = bank - 75;
   }
 };
+// Set up class to assist testing of reading info
+class fileread_ref {
+public:
+  std::istringstream is_head{"name,blank,position,value,not,0,total_points,2000,team,extra\n"};
+  const int is_length = 10;
+  const int key_ref[10] = {1,0,2,5,0,0,4,0,3,0};
+  const std::string name_ref = "Alan Shearer";
+  const std::string pos_ref = "FWD";
+  const std::string team_ref = "Blackburn Rovers";
+  const int pts_ref = 9;
+  const int value_ref = 120;
+  std::istringstream is_data{"Alan Shearer,0.0,FWD,120,2,true,9,00:00:11,Blackburn Rovers,8.1\n"};
+
+};
 
 // Write google tests in namespace
 namespace{
   // Test values after player is constructed but not populated
   // Test update_attr
-  TEST(SampleTeamTest, empty_player)
+  TEST(SampleTeamTest, EmptyPlayer)
   {
     // Construct player
     player empty;
@@ -167,7 +180,7 @@ namespace{
   }
   // Test values after sample team
   // Test both functions for getting points and choosing captain
-  TEST(SampleTeamTest, sample_team)
+  TEST(SampleTeamTest, SampleTeam)
   {
     // Construct team
     sample steam = sample();
@@ -261,39 +274,5 @@ namespace{
     }
     EXPECT_EQ(fwds_in,1);
     EXPECT_EQ(plys_in,11);
-  }
-
-  // Test values after sample team
-  // Test both functions for getting points and choosing captain
-  TEST(SampleTeamTest, read_player) {
-    // Construct player
-    player empty;
-    // Read player attributes from file
-
-    // Check new player attributes against default
-    EXPECT_NE(empty.get_attr_str("name"),"empty");
-    EXPECT_NE(empty.get_attr_str("team"),"empty");
-    EXPECT_NE(empty.get_attr_str("position"),"empty");
-    EXPECT_NE(empty.get_attr_int("value"),0);
-  }
-
-  // Test ability of key maker to correctly interpret input stream
-  TEST(FileReadTest, read_key) {
-    // Populate input stream
-    std::istringstream is("name,blank,position,value,not,0,total_points,2000,team");
-    int is_length = 9;
-    // Construct user_input class
-    user_input ui = user_input();
-    // Call function to generate key_csv
-    ui.read_player_attr_header(is);
-    // Output key for the sake of testing
-    int *key_csv = ui.output_player_attr_header();
-    // A priori reference based on this test
-    int key_ref[is_length] = {1,0,2,5,0,0,4,0,3};
-    // Cycle through integer lists for direct testing
-    for (int i=0; i<is_length; ++i) {
-      EXPECT_EQ(key_csv[i],key_ref[i]);
-    }
-
   }
 }

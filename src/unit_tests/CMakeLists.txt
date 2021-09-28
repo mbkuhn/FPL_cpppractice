@@ -1,6 +1,7 @@
 target_sources(${exe_utest_name}
                PRIVATE
                data_class_testing.cpp
+	             data_read_testing.cpp
                decision_testing.cpp
                ${CMAKE_SOURCE_DIR}/googletest/googletest/src/gtest_main.cc)
 target_include_directories(${exe_utest_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

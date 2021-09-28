@@ -8,10 +8,11 @@ class user_input {
 private:
   int init_gw, tr_gw;
   int key_length;
-  int* key_csv;
+  int *key_csv;
 
 public:
   user_input();
+  ~user_input();
   void interpret(int argc,char* argv[]);
   // Getters
   int get_initGW();
@@ -23,8 +24,8 @@ public:
   // Output header (for the sake of testing)
   int* output_player_attr_header();
   // Read file to populate player
-  void read_player_attr_var(std::istream& is, std::string name,
-    std::string position, std::string team, int points, int value);
+  void read_player_attr_var(std::istream& is, std::string& name,
+    std::string& position, std::string& team, int& points, int& value);
 };
 
 #endif

@@ -13,8 +13,8 @@ player::player()
   played = false;
 }
 player::player(const std::string name_in,
-               const std::string team_in,
                const std::string pos_in,
+               const std::string team_in,
                const int tot_pts_in,
                const int value_in)
 {

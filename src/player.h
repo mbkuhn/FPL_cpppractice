@@ -27,8 +27,8 @@ public:
 
   // Constructors
   player();
-  player(const std::string name_in, const std::string team_in,
-    const std::string pos_in, const int tot_pts_in, const int value_in);
+  player(const std::string name_in, const std::string pos_in,
+    const std::string team_in, const int tot_pts_in, const int value_in);
   // Data getters
   int get_attr_int(const std::string attr);
   std::string get_attr_str(const std::string attr);

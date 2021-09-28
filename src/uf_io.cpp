@@ -1,12 +1,17 @@
 #include "uf_io.h"
 
 // == Member functions for class - user_input == //
+// Constructor
 user_input::user_input() {
   // Arguments:
   // - initial condition: week to choose the best 11 (between 1 and 38)
   // - number of transfers permitted each week
   init_gw = 1;
   tr_gw = 1;
+}
+// Destructor
+user_input::~user_input(){
+  delete key_csv;
 }
 void user_input::interpret(int argc,char* argv[]) {
   // Initialize if specified
@@ -48,10 +53,11 @@ void user_input::read_player_attr_header(std::istream& is) {
   while (std::getline(is,tmp,',')) {
     ++key_length;
   }
-  // Return to the beginning of the line
+  // Clear flags and return to the beginning of the line
   is.clear();
+  is.seekg(std::ios::beg);
   // Give the correct length to the key
-  key_csv[key_length] = {0};
+  key_csv = new int(key_length);
   // Step through the array to assign correct values to key
   for (int i=0; i<key_length; ++i) {
     if (i<key_length-1) {
@@ -75,6 +81,8 @@ void user_input::read_player_attr_header(std::istream& is) {
     } else {
     if (tmp=="value") {
       key_csv[i]=5;
+    } else {
+      key_csv[i]=0;
     } } } } }
   }
 }
@@ -82,8 +90,8 @@ int* user_input::output_player_attr_header() {
   return key_csv;
 }
 // Read file to populate player
-void user_input::read_player_attr_var(std::istream& is, std::string name,
-std::string position, std::string team, int points, int value) {
+void user_input::read_player_attr_var(std::istream& is, std::string& name,
+std::string& position, std::string& team, int& points, int& value) {
   std::string tmp;
   // Go through key to determine when to read
   for (int i=0; i<key_length; ++i) {
