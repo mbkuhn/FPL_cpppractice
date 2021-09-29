@@ -98,6 +98,26 @@ void player::update_attr(const std::string attr, const bool val)
   if (attr=="played")
   played=val;
 }
+// Update entire player with given attributes
+void player::update_player(const std::string name_in,
+    const std::string pos_in, const std::string team_in,
+    const int tot_pts_in, const int value_in)
+{
+  name         = name_in;
+  position     = pos_in;
+  team         = team_in;
+  total_points = tot_pts_in;
+  value        = value_in;
+}
+// Update entire player with given player's attributes
+void player::update_player(player p_in)
+{
+  name         = p_in.get_attr_str("name");
+  position     = p_in.get_attr_str("position");
+  team         = p_in.get_attr_str("team");
+  total_points = p_in.get_attr_int("points");
+  value        = p_in.get_attr_int("value");
+}
 // Output to screen
 void player::synopsis()
 {

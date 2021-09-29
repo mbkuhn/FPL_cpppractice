@@ -38,6 +38,9 @@ public:
   void update_attr(const std::string attr, const std::string val);
   void update_attr(const std::string attr, const char* cval);
   void update_attr(const std::string attr, const bool val);
+  void update_player(const std::string name_in, const std::string pos_in,
+    const std::string team_in, const int tot_pts_in, const int value_in);
+  void update_player(player p_in);
   // Output to screen
   void synopsis();
 };

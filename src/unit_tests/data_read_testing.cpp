@@ -8,6 +8,7 @@ namespace {
 class FileReadTest : public testing::Test {
 protected:
   std::istringstream is_head{"name,blank,position,value,not,0,total_points,2000,team,extra\n"};
+  std::istringstream is_data{"Alan Shearer,0.0,FWD,120,2,true,9,00:00:11,Blackburn Rovers,8.1\n"};
   const int is_length = 10;
   const int key_ref[10] = {1,0,2,5,0,0,4,0,3,0};
   const std::string name_ref = "Alan Shearer";
@@ -15,7 +16,21 @@ protected:
   const std::string team_ref = "Blackburn Rovers";
   const int pts_ref = 9;
   const int value_ref = 120;
-  std::istringstream is_data{"Alan Shearer,0.0,FWD,120,2,true,9,00:00:11,Blackburn Rovers,8.1\n"};
+
+  const std::string season_ref = "2021-22"; // seasons before 20-21 have issues
+  const int gw_ref = 1;
+
+  const std::string name_ref2 = "Eric Bailly";
+  const std::string pos_ref2 = "DEF";
+  const std::string team_ref2 = "Man Utd";
+  const int pts_ref2 = 0;
+  const int value_ref2 = 50;
+
+  const std::string name_ref3 = "James Ward-Prowse";
+  const std::string pos_ref3 = "MID";
+  const std::string team_ref3 = "Southampton";
+  const int pts_ref3 = 2;
+  const int value_ref3 = 65;
 
 };
 
@@ -90,12 +105,45 @@ protected:
     // With data, construct player
     // Construct player
     player alan = player(name,position,team,points,value);
-    // Check new player attributes against default
+    // Check new player attributes
     EXPECT_EQ(alan.get_attr_str("name"),name_ref);
     EXPECT_EQ(alan.get_attr_str("team"),team_ref);
     EXPECT_EQ(alan.get_attr_str("position"),pos_ref);
     EXPECT_EQ(alan.get_attr_int("points"),pts_ref);
     EXPECT_EQ(alan.get_attr_int("value"),value_ref);
+  }
+
+  // Test both functions for getting points and choosing captain
+  TEST_F(FileReadTest, ReadPlayerFromFile) {
+    // Construct user_input class
+    user_input ui = user_input();
+    // Construct filename and open
+    std::string fname = ui.get_filename(gw_ref, season_ref);
+    std::ifstream myfile (fname);
+    // Call function to generate key_csv
+    ui.read_player_attr_header(myfile);
+    // Construct, read, and populate player
+    player eric = ui.read_player_new(myfile); // Eric Bailly
+    // Check new player attributes
+    EXPECT_EQ(eric.get_attr_str("name"),name_ref2);
+    EXPECT_EQ(eric.get_attr_str("team"),team_ref2);
+    EXPECT_EQ(eric.get_attr_str("position"),pos_ref2);
+    EXPECT_EQ(eric.get_attr_int("points"),pts_ref2);
+    EXPECT_EQ(eric.get_attr_int("value"),value_ref2);
+    // Skip 2 players
+    std::string tmp;
+    std::getline(myfile,tmp);
+    std::getline(myfile,tmp);
+    // Copy attributes
+    ui.read_player_copy(myfile,eric); // James Ward-Prowse
+    // Check updated player attributes
+    EXPECT_EQ(eric.get_attr_str("name"),name_ref3);
+    EXPECT_EQ(eric.get_attr_str("team"),team_ref3);
+    EXPECT_EQ(eric.get_attr_str("position"),pos_ref3);
+    EXPECT_EQ(eric.get_attr_int("points"),pts_ref3);
+    EXPECT_EQ(eric.get_attr_int("value"),value_ref3);
+    // Close file
+    myfile.close();
   }
 
 }

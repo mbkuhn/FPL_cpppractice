@@ -9,10 +9,6 @@ user_input::user_input() {
   init_gw = 1;
   tr_gw = 1;
 }
-// Destructor
-user_input::~user_input(){
-  delete key_csv;
-}
 void user_input::interpret(int argc,char* argv[]) {
   // Initialize if specified
   for (int i=1; i<argc; ++i) {
@@ -49,23 +45,26 @@ std::string user_input::get_filename(int gw, std::string season) {
 void user_input::read_player_attr_header(std::istream& is) {
   std::string tmp;
   key_length = 0;
+  // Extract only header line and put into stringstream
+  std::getline(is,tmp);
+  std::stringstream ss(tmp);
   // Go through header line to get number of entries
-  while (std::getline(is,tmp,',')) {
+  while (std::getline(ss,tmp,',')) {
     ++key_length;
   }
   // Clear flags and return to the beginning of the line
-  is.clear();
-  is.seekg(std::ios::beg);
+  ss.clear();
+  ss.seekg(std::ios::beg);
   // Give the correct length to the key
-  key_csv = new int(key_length);
+  key_csv = std::make_unique<int[]>(key_length);
   // Step through the array to assign correct values to key
   for (int i=0; i<key_length; ++i) {
     if (i<key_length-1) {
       // Look for delimiter
-      std::getline(is,tmp,',');
+      std::getline(ss,tmp,',');
     } else {
       // Look for newline
-      std::getline(is,tmp);
+      std::getline(ss,tmp);
     }
     if (tmp=="name") {
       key_csv[i]=1;
@@ -87,20 +86,28 @@ void user_input::read_player_attr_header(std::istream& is) {
   }
 }
 int* user_input::output_player_attr_header() {
-  return key_csv;
+  // transfer information from key_csv to other function
+  int* int_tmp = new int[key_length];
+  for (int i=0; i<key_length; ++i) {
+    int_tmp[i] = key_csv[i];
+  }
+  return int_tmp;
 }
 // Read file to populate player
 void user_input::read_player_attr_var(std::istream& is, std::string& name,
 std::string& position, std::string& team, int& points, int& value) {
   std::string tmp;
+  // Extract only a single line (i.e., a single player)
+  std::getline(is,tmp);
+  std::stringstream ss(tmp);
   // Go through key to determine when to read
   for (int i=0; i<key_length; ++i) {
     if (i<key_length-1) {
       // Look for delimiter
-      std::getline(is,tmp,',');
+      std::getline(ss,tmp,',');
     } else {
       // Look for newline
-      std::getline(is,tmp);
+      std::getline(ss,tmp);
     }
     switch (key_csv[i]) {
     case 1:
@@ -115,4 +122,18 @@ std::string& position, std::string& team, int& points, int& value) {
       value = std::stoi(tmp); break;
     }
   }
+}
+// Read and embed player attributes in player class directly
+// key_csv must be initialized before using these!
+player user_input::read_player_new(std::istream& is) {
+  std::string name, position, team;
+  int points, value;
+  read_player_attr_var(is,name,position,team,points,value);
+  return player(name,position,team,points,value);
+}
+void user_input::read_player_copy(std::istream& is, player& p_in) {
+  std::string name, position, team;
+  int points, value;
+  read_player_attr_var(is,name,position,team,points,value);
+  p_in.update_player(name,position,team,points,value);
 }

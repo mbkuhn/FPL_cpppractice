@@ -3,16 +3,18 @@
 
 #include <sstream>
 #include <iostream>
+#include <fstream>
+#include <memory>
+#include "player.h"
 
 class user_input {
 private:
   int init_gw, tr_gw;
   int key_length;
-  int *key_csv;
+  std::unique_ptr<int[]> key_csv;
 
 public:
   user_input();
-  ~user_input();
   void interpret(int argc,char* argv[]);
   // Getters
   int get_initGW();
@@ -26,6 +28,8 @@ public:
   // Read file to populate player
   void read_player_attr_var(std::istream& is, std::string& name,
     std::string& position, std::string& team, int& points, int& value);
+  player read_player_new(std::istream& is);
+  void read_player_copy(std::istream& is, player& p_in);
 };
 
 #endif
