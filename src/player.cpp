@@ -236,8 +236,8 @@ int team::get_points()
 int team::get_points_best()
 {
   int tmp;
-  int rank_pts[12] = {0};
-  int rank_ind[12] = {0};
+  int rank_pts[13];
+  int rank_ind[13];
   int defs_in = 0;
   int mids_in = 0;
   int fwds_in = 0;
@@ -256,8 +256,12 @@ int team::get_points_best()
   for (int i=2; i<15; ++i) {
     // Get points of current field player
     tmp = (*roster[i]).get_attr_int("points");
+    // Populate new spot with current value
+    // Value will only stay there if i=2 or by coincidence
+    rank_pts[i-2] = tmp;
+    rank_ind[i-2] = i;
     // Traverse ranked list of players' points
-    for (int ii=0; ii<i-1; ++ii) {
+    for (int ii=0; ii<i-2; ++ii) {
       if (rank_pts[ii]<tmp){
         // Move other elements to the right
         for (int iii=i-2; iii>ii; --iii) {

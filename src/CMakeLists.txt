@@ -1,5 +1,13 @@
 cmake_minimum_required (VERSION 3.14 FATAL_ERROR)
 set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-11")
+
+# Compiler flags
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -Wextra -g -pedantic")
+set(CMAKE_CXX_FLAGS_RELEASE "-DNEDEBUG -O3")
+
 project(FPL_cpppractice)
 
 # Target names
