@@ -1,4 +1,5 @@
 #include "uf_io.h"
+#include <filesystem>
 
 // == Member functions for class - user_input == //
 // Constructor
@@ -8,6 +9,7 @@ user_input::user_input() {
   // - number of transfers permitted each week
   init_gw = 1;
   tr_gw = 1;
+
 }
 void user_input::interpret(int argc,char* argv[]) {
   // Initialize if specified
@@ -27,12 +29,31 @@ void user_input::interpret(int argc,char* argv[]) {
   }
   std::cout << "Parameters: initial gameweek " << init_gw << ", " << tr_gw << " transfer(s) each gameweek.\n" ;
 }
+// Find and save number of gameweeks in specified season
+void user_input::save_numGW(std::string season) {
+  std::stringstream sbuf;
+  total_gw = 0;
+  // src_dir is defined using cmake macro
+  sbuf << src_dir << "/../data/" << season << "/gws/";
+  int nskip = (sbuf.str()).size();
+  for (const auto & entry : std::filesystem::directory_iterator(sbuf.str())) {
+    std::string fpath = entry.path();
+    // Check if file begins with gw
+    if (fpath[nskip  ]!='g') continue;
+    if (fpath[nskip+1]!='w') continue;
+    // If it does, increment counter
+    ++total_gw;
+  }
+}
 // Getters
 int user_input::get_initGW() {
   return init_gw;
 }
 int user_input::get_trPerGW() {
   return tr_gw;
+}
+int user_input::get_numGW() {
+  return total_gw;
 }
 // Get filename
 std::string user_input::get_filename(int gw, std::string season) {

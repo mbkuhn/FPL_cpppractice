@@ -32,6 +32,9 @@ protected:
   const int pts_ref3 = 2;
   const int value_ref3 = 65;
 
+  const std::string season_ref2 = "2020-21"; // since this season is complete
+  const int nGW_ref = 38;
+
 };
 
   // Test ability of key maker to correctly interpret header stream
@@ -144,6 +147,16 @@ protected:
     EXPECT_EQ(eric.get_attr_int("value"),value_ref3);
     // Close file
     myfile.close();
+  }
+
+  // Test correct reading of number of gameweeks in known season
+  TEST_F(FileReadTest, ReadNumGameweeks) {
+    // Construct user_input class
+    user_input ui = user_input();
+    // Use function to find and save number of gameweeeks for reference season
+    ui.save_numGW(season_ref2);
+    // Check against expected
+    EXPECT_EQ(ui.get_numGW(),nGW_ref);
   }
 
 }
