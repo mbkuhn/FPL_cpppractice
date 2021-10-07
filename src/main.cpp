@@ -5,7 +5,7 @@ int main(int argc, char* argv[])
 {
   // Check if number of inputs is within allowed amount
   if (argc>4) {
-    std::cout << "Faulty inputs, quitting program. Supply 1 to 3 arguments.\n";
+    std::cout << "Faulty inputs, quitting program. Supply 3 or fewer arguments.\n";
     exit (EXIT_FAILURE);
   }
   // Construct class

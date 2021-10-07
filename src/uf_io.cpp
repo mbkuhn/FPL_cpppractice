@@ -34,7 +34,7 @@ void user_input::interpret(int argc,char* argv[]) {
         break;}
       }
     } catch (...) {
-      std::cout << "Faulty inputs, quitting program. Supply 1 to 3 arguments.\n";
+      std::cout << "Faulty inputs, quitting program. Supply 3 or fewer arguments.\n";
       exit (EXIT_FAILURE);
     }
   }
