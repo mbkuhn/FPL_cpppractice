@@ -12,6 +12,7 @@ private:
   int init_gw, tr_gw, total_gw;
   int key_length;
   std::unique_ptr<int[]> key_csv;
+  std::string myseason;
 
 public:
   user_input();

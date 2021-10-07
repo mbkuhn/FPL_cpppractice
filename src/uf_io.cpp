@@ -7,9 +7,10 @@ user_input::user_input() {
   // Arguments:
   // - initial condition: week to choose the best 11 (between 1 and 38)
   // - number of transfers permitted each week
+  // - which season to consider (selects data directory)
   init_gw = 1;
   tr_gw = 1;
-
+  myseason = "2021-22";
 }
 void user_input::interpret(int argc,char* argv[]) {
   // Initialize if specified
@@ -21,13 +22,34 @@ void user_input::interpret(int argc,char* argv[]) {
       switch (i) {
         case 1: {ss >> init_gw; break;}
         case 2: {ss >> tr_gw; break;}
+        case 3: {std::string sbuf; ss >> sbuf;
+          if (sbuf=="2020-2021" || sbuf=="2020" || sbuf=="2020-21") {
+            myseason = "2020-21";
+          } else { if (sbuf=="2021-2022" || sbuf=="2021" || sbuf=="2021-22") {
+            myseason = "2021-22";
+          } else {
+            std::cout << "Faulty inputs, quitting program. Supply an available season.\n";
+            exit (EXIT_FAILURE);
+          } }
+        break;}
       }
     } catch (...) {
-      std::cout << "Faulty inputs, quitting program. Supply 1 or 2 integer arguments.\n";
+      std::cout << "Faulty inputs, quitting program. Supply 1 to 3 arguments.\n";
       exit (EXIT_FAILURE);
     }
   }
-  std::cout << "Parameters: initial gameweek " << init_gw << ", " << tr_gw << " transfer(s) each gameweek.\n" ;
+  // Find and save the number of gameweeks
+  save_numGW(myseason);
+  // Check bounds of initial gameweek
+  if (init_gw < 1) {
+    init_gw = 1;
+    std::cout << "Initial gameweek rounded up.\n";
+  }
+  if (init_gw > total_gw) {
+    init_gw = total_gw;
+    std::cout << "Initial gameweek rounded down.\n";
+  }
+  std::cout << "Parameters: initial gameweek " << init_gw << ", " << tr_gw << " transfer(s) each gameweek. " << myseason <<"\n" ;
 }
 // Find and save number of gameweeks in specified season
 void user_input::save_numGW(std::string season) {
