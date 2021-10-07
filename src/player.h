@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <cstring>
+#include <sstream>
 
 // Define player class
 class player
@@ -68,6 +69,9 @@ public:
 
   // Output synopsis of team
   void synopsis();
+  // Other output methods
+  void brief();
+  void brief_block(player* myp, int np);
 
   // Get team point total, given current selection
   int get_points();

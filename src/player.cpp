@@ -205,6 +205,63 @@ void team::synopsis()
     (*roster[i]).synopsis();
   }
 }
+// Output brief of team
+void team::brief()
+{
+  // Streams for collection before printing
+  std::stringstream ss_name,ss_pts;
+  // Print subs first
+  std::cout << "\nSubstitutes:\n";
+  for (int i=0; i<15; ++i) {
+    player* myp = roster[i];
+    if (!(*myp).get_attr_bool("played")){
+      std::string nm = (*myp).get_attr_str("name");
+      int npt = (*myp).get_attr_int("points");
+      ss_name << nm << "  ";
+      ss_pts  << "(" << npt << ")";
+      if (npt<10) ss_pts << " ";
+      for (int j=2; j<nm.size(); ++j) {
+        // number of spaces to match size of name
+        ss_pts << " ";
+      }
+    }
+  }
+  std::cout << ss_name.str() << "\n";
+  std::cout << ss_pts.str()  << "\n";
+  // Print goalie
+  std::cout << "Goalkeeper:\n";
+  brief_block(GKs,2);
+  // Print defenders
+  std::cout << "Defenders:\n";
+  brief_block(DEFs,5);
+  // Print midfielders
+  std::cout << "Midfielders:\n";
+  brief_block(MIDs,5);
+  // Print forwards
+  std::cout << "Forwards:\n";
+  brief_block(FWDs,3);
+}
+
+void team::brief_block(player* myp, int np)
+{
+  std::stringstream ss_name,ss_pts;
+  for (int i=0; i<np; ++i) {
+    if (i!=0) ++myp;
+    if ((*myp).get_attr_bool("played")){
+      std::string nm = (*myp).get_attr_str("name");
+      int npt = (*myp).get_attr_int("points");
+      ss_name << nm << "  ";
+      ss_pts  << npt;
+      if (npt<10) ss_pts << " ";
+      for (int j=0; j<nm.size(); ++j) {
+        // number of spaces to match size of name
+        ss_pts << " ";
+      }
+    }
+  }
+  std::cout << ss_name.str() << "\n";
+  std::cout << ss_pts.str()  << "\n";
+}
 
 // Get team point total, given current selection
 // Assume captain is the one with the most points
